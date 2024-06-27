@@ -26,18 +26,52 @@ export const getUsers = (req: Request, res: Response) => {
 export const getUserById = (req: Request, res: Response) => {
   const { id } = req.params;
   User.findById(id)
-    .then(userData => {
-      if (!userData) {
-        return res.status(NOT_FOUND).send({ message: 'Пользователь по указанному _id не найден.'})
-      }
-      res.status(SUCCESS_REQUEST).send({
-        name: userData.name,
-        about: userData.about,
-        avatar: userData.avatar,
-        _id: userData._id
-      })
+  .then(userData => {
+    if (!userData) {
+      return res.status(NOT_FOUND).send({ message: 'Пользователь по указанному _id не найден.'})
+    }
+    res.status(SUCCESS_REQUEST).send({
+      name: userData.name,
+      about: userData.about,
+      avatar: userData.avatar,
+      _id: userData._id
     })
-    .catch(err => {
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE })
-    });
+  })
+  .catch(err => {
+    return res.status(INTERNAL_SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE })
+  });
+}
+
+export const updateUserProfile = (req: Request, res: Response) => {
+  const { name, about } = req.body;
+  const { id } = req.params;
+  User.findByIdAndUpdate(id, { name, about }, { new: true, runValidators: true })
+  .then(user => {
+    if (!user) {
+      return res.status(NOT_FOUND).send({ message: 'Пользователь с указанным _id не найден.'})
+    }
+    res.status(SUCCESS_REQUEST).send(user)})
+  .catch(err => {
+    if (err instanceof mongoose.Error.ValidationError) {
+      return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении профиля пользователя.'})
+    }
+    return res.status(INTERNAL_SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE })
+  });
+}
+
+export const updateUserAvatar = (req: Request, res: Response) => {
+  const { avatar } = req.body;
+  const { id } = req.params;
+  User.findByIdAndUpdate(id, { avatar }, { new: true, runValidators: true })
+  .then(user => {
+    if (!user) {
+      return res.status(NOT_FOUND).send({ message: 'Пользователь с указанным _id не найден.'})
+    }
+    res.status(SUCCESS_REQUEST).send(user)})
+  .catch(err => {
+    if (err instanceof mongoose.Error.ValidationError) {
+      return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении аватара пользователя.'})
+    }
+    return res.status(INTERNAL_SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE })
+  });
 }
