@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Card from '../models/card';
-import { SUCCESS_REQUEST, BAD_REQUEST, INTERNAL_SERVER_ERROR, SERVER_ERROR_MESSAGE } from '../utils/constants';
+import { SUCCESS_REQUEST, BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR, SERVER_ERROR_MESSAGE } from '../utils/constants';
 
 export const createCard = (req: Request, res: Response) => {
   const { name, link } = req.body;
@@ -10,15 +10,33 @@ export const createCard = (req: Request, res: Response) => {
     .then(cardData => res.status(SUCCESS_REQUEST).send(cardData))
     .catch(err => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(BAD_REQUEST).send({message: 'Для создания карточки переданы некорректные данные.'})
+        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании карточки.'})
       }
-      return res.status(INTERNAL_SERVER_ERROR).send({message: SERVER_ERROR_MESSAGE })
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE })
     });
 }
 
+export const getCards = (req: Request, res: Response) => {
+  Card.find({})
+  .then(cardsData => res.status(SUCCESS_REQUEST).send(cardsData))
+  .catch(err => {
+    return res.status(INTERNAL_SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE })
+  });
+}
 
-
-
+export const deleteCardById = (req: Request, res: Response) => {
+  const { cardId } = req.params;
+  Card.findByIdAndDelete(cardId)
+  .then(card => {
+    if (!card) {
+      return res.status(NOT_FOUND).send({ message: 'Карточка по указанному _id не найдена.'})
+    }
+    res.status(SUCCESS_REQUEST).send({ message: 'Карточка удалена.'})
+  })
+  .catch(err => {
+    return res.status(INTERNAL_SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE })
+  });
+}
 
 
 /*export const createCar = (req, res) => Card.create({
