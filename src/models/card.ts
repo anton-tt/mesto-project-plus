@@ -1,7 +1,7 @@
 import { Types, model, Schema } from 'mongoose';
 import { ICard } from '../utils/types';
 
-const userSchema = new Schema<ICard>({
+const cardSchema = new Schema<ICard>({
   name: {
     type: String,
     required: true,
@@ -26,4 +26,4 @@ const userSchema = new Schema<ICard>({
   }
 });
 
-export default model<ICard>('user', userSchema);
+export default model<ICard>('card', cardSchema);
