@@ -10,7 +10,7 @@ export const createCard = (req: Request, res: Response) => {
     .then(cardData => res.status(SUCCESS_REQUEST).send(cardData))
     .catch(err => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании карточки.'})
+        return res.status(BAD_REQUEST).send({ message: 'Пользователь с таким email уже существует.'})
       }
       return res.status(INTERNAL_SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE })
     });
@@ -71,10 +71,3 @@ export const dislikeCard = (req: Request, res: Response) => {
     return res.status(INTERNAL_SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE })
   });
 }
-
-/*export const createCar = (req, res) => Card.create({
-  email: req.body.email,
-  password: req.body.password,
-})
-  .then((user) => res.send(user))
-  .catch((err) => res.status(400).send(err));*/

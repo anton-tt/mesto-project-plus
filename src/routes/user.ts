@@ -1,13 +1,14 @@
 import { Router } from 'express';
-import { createUser, getUsers, getUserById, updateUserProfile, updateUserAvatar } from '../controllers/users';
+import { getUsers, getUserById, updateUserProfile, updateUserAvatar, getCurrentUser } from '../controllers/users';
 import { USERS_ROUT } from '../utils/constants';
+import auth from '../middlewares/auth';
 
 const userRouter = Router();
 
-userRouter.post(USERS_ROUT, createUser);
-userRouter.get(USERS_ROUT, getUsers);
-userRouter.get(`${USERS_ROUT}/:userId`, getUserById);
-userRouter.patch(`${USERS_ROUT}/me`, updateUserProfile);
-userRouter.patch(`${USERS_ROUT}/me/avatar`, updateUserAvatar);
+userRouter.get(`${USERS_ROUT}`, auth, getUsers);
+userRouter.get(`${USERS_ROUT}/:userId/`, getUserById);
+userRouter.get(`${USERS_ROUT}/me/`, auth, getCurrentUser);
+userRouter.patch(`${USERS_ROUT}/me/`, auth, updateUserProfile);
+userRouter.patch(`${USERS_ROUT}/me/avatar/`, auth, updateUserAvatar);
 
 export default userRouter;
