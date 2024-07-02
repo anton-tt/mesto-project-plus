@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { UNAUTHORIZED } from '../utils/constants';
+import UnauthorizedError from '../errors/unauthorized';
 
 export default (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
-  //console.log(req.headers);
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return res.status(UNAUTHORIZED).send({ message: 'Необходима авторизация' });
+    throw new UnauthorizedError('Необходима авторизация');
   }
 
   const token = authorization.replace('Bearer ', '');
@@ -15,9 +14,8 @@ export default (req: Request, res: Response, next: NextFunction) => {
   try {
     payload = jwt.verify(token, 'some-secret-key');
     (req as any).user = payload;
-
+    return next();
   } catch (err) {
-    return res.status(UNAUTHORIZED).send({ message: 'Необходима авторизация' });
+    return next(new UnauthorizedError('Необходима авторизация'));
   }
-  next(); // пропускаем запрос дальше
 };
