@@ -6,11 +6,11 @@ import { SUCCESS_REQUEST, BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR, SERVER_
 export const createCard = (req: Request, res: Response) => {
   const { name, link } = req.body;
   const ownerId = req.user._id;
-  return Card.create({ name, link, ownerId })
+  return Card.create({ name, link, owner: ownerId })
     .then(cardData => res.status(SUCCESS_REQUEST).send(cardData))
     .catch(err => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(BAD_REQUEST).send({ message: 'Пользователь с таким email уже существует.'})
+        return res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные карточки.'})
       }
       return res.status(INTERNAL_SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE })
     });

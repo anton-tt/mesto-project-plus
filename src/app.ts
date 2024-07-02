@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
-import userRouter from './routes/user';
+import appRouter from './routes/index';
 import cardRouter from './routes/card';
 import authRouter from './routes/auth';
 import unknownRouter from './routes/auth';
@@ -21,12 +21,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
   next();
 });*/
 
-app.use(authRouter);
-app.use(auth);
-app.use(userRouter);
-app.use(cardRouter);
-
-app.use(unknownRouter);
+app.use(appRouter);
 
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
