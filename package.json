@@ -4,7 +4,7 @@
   "description": "Backend для сервиса",
   "main": "dist/app.js",
   "scripts": {
-    "lint": "npx eslint src/**/*.ts",
+    "lint": "npx eslint eslint.config.mjs src/**/*.{js,jsx,ts,tsx}",
     "build": "tsc",
     "dev": "ts-node-dev src/app.ts",
     "start": "ts-node src/app.ts",
@@ -39,5 +39,6 @@
     "mongoose": "^6.13.0",
     "validator": "^13.12.0",
     "winston": "^3.13.0"
+
   }
 }
