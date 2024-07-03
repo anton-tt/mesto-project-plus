@@ -6,7 +6,6 @@ import User from '../models/user';
 import BadRequestError from '../errors/bad-request';
 import ConflictError from '../errors/conflict';
 import NotFoundError from '../errors/not-found';
-import UnauthorizedError from '../errors/unauthorized';
 import { SUCCESS_REQUEST, CREATED } from '../utils/constants';
 
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
@@ -23,11 +22,11 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
     .catch(err => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError('Переданы некорректные данные при создании пользователя.'));
-      }
-      if (err.code === 11000) {
+      } else if (err.code === 11000) {
         next(new ConflictError('Пользователь с такой электронной почтой уже существует.'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 }
 
@@ -47,16 +46,14 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
     .catch(err => {
       if (err instanceof mongoose.Error.CastError) {
         next(new NotFoundError('Пользователь не найден.'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 }
 
 export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
   const id = req.user._id;
-  if (!id) {
-    throw new UnauthorizedError('Необходима авторизация' );
-  }
   User.findById(id).orFail()
   .then(userData => {
     res.status(SUCCESS_REQUEST).send({
@@ -70,8 +67,9 @@ export const getCurrentUser = (req: Request, res: Response, next: NextFunction) 
   .catch(err => {
     if (err instanceof mongoose.Error.DocumentNotFoundError) {
       next(new NotFoundError('Пользователь с указанным _id не найден.'));
+    } else {
+      next(err);
     }
-    next(err);
   });
 }
 
@@ -90,8 +88,9 @@ export const getUserById = (req: Request, res: Response, next: NextFunction) => 
   .catch(err => {
     if (err instanceof mongoose.Error.CastError) {
       next(new NotFoundError('Пользователь с указанным _id не найден.'));
+    } else {
+      next(err);
     }
-    next(err);
   });
 }
 
@@ -109,11 +108,11 @@ export const updateUserProfile = (req: Request, res: Response, next: NextFunctio
   .catch(err => {
     if (err instanceof mongoose.Error.DocumentNotFoundError) {
       next(new NotFoundError('Пользователь с указанным _id не найден.'));
-    }
-    if (err instanceof mongoose.Error.ValidationError) {
+    } else if (err instanceof mongoose.Error.ValidationError) {
       next(new BadRequestError('Переданы некорректные данные при обновлении профиля пользователя.'))
+    } else {
+      next(err);
     }
-    next(err);
   });
 }
 
@@ -125,10 +124,10 @@ export const updateUserAvatar = (req: Request, res: Response, next: NextFunction
   .catch(err => {
     if (err instanceof mongoose.Error.DocumentNotFoundError) {
       next(new NotFoundError('Пользователь с указанным _id не найден.'));
-    }
-    if (err instanceof mongoose.Error.ValidationError) {
+    } else if (err instanceof mongoose.Error.ValidationError) {
       next(new BadRequestError('Переданы некорректные данные при обновлении аватара пользователя.'))
+    } else {
+      next(err);
     }
-    next(err);
   });
 }

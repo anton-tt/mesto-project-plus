@@ -14,8 +14,9 @@ export const createCard = (req: Request, res: Response, next: NextFunction) => {
     .catch(err => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError('Переданы некорректные данные карточки.'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 }
 
@@ -38,8 +39,9 @@ export const deleteCardById = (req: Request, res: Response, next: NextFunction) 
   .catch(err => {
     if (err instanceof mongoose.Error.CastError) {
       next(new BadRequestError('Карточка по указанному _id не найдена.'));
+    } else {
+      next(err);
     }
-    next(err);
   });
 }
 
@@ -52,11 +54,11 @@ export const likeCard = (req: Request, res: Response, next: NextFunction) => {
   .catch(err => {
     if (err instanceof mongoose.Error.DocumentNotFoundError) {
       next(new NotFoundError('Карточка по указанному _id не найдена.'));
-    }
-    if (err instanceof mongoose.Error.CastError) {
+    } else if (err instanceof mongoose.Error.CastError) {
       next(new BadRequestError('Переданы некорректные данные для постановки лайка.'))
+    } else {
+      next(err);
     }
-    next(err);
   });
 }
 
@@ -69,10 +71,10 @@ export const dislikeCard = (req: Request, res: Response, next: NextFunction) => 
   .catch(err => {
     if (err instanceof mongoose.Error.DocumentNotFoundError) {
       next(new NotFoundError('Карточка по указанному _id не найдена.'));
-    }
-    if (err instanceof mongoose.Error.CastError) {
+    } else if (err instanceof mongoose.Error.CastError) {
       next(new BadRequestError('Переданы некорректные данные для снятия лайка.'))
+    } else {
+      next(err);
     }
-    next(err);
   });
 }
