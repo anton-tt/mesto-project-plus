@@ -12,8 +12,10 @@ export const SERVER_ERROR_MESSAGE = 'Возникла непредвиденна
 export const CARDS_ROUT = '/cards';
 export const USERS_ROUT = '/users';
 export const SIGNIN_ROUT = '/signin';
-export const SIGHUP_ROUT = '/signup';
+export const SIGNUP_ROUT = '/signup';
 
 export const DEFAULT_USER_NAME = 'Жак-Ив Кусто';
 export const DEFAULT_USER_ABOUT = 'Исследователь';
 export const DEFAULT_USER_AVATAR = 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png';
+
+export const URL_REGEX = /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
