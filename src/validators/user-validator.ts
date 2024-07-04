@@ -21,14 +21,14 @@ export const signInValidator = celebrate({
 
 export const getUserByIdValidator = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().length(24).hex().required()
+    userId: Joi.string().length(24).hex().required()
   })
 });
 
 export const updateUserProfileValidator = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30).hex().required(),
-    about: Joi.string().min(2).max(200).hex().required()
+    name: Joi.string().min(2).max(30).required(),
+    about: Joi.string().min(2).max(200).required()
   })
 });
 

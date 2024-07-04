@@ -29,11 +29,14 @@ export const getCards = (req: Request, res: Response, next: NextFunction) => {
 export const deleteCardById = (req: Request, res: Response, next: NextFunction) => {
   const { cardId } = req.params;
   const userId = req.user._id;
-  Card.findByIdAndDelete(cardId).orFail()
+  Card.findById(cardId).orFail()
   .then(card => {
     if (card.owner?.toString() !== userId) {
       throw new ForbiddenError('Карточку может удалить только её владелец.')
     }
+  })
+  Card.deleteOne({ _id: cardId })
+  .then(card => {
     res.status(SUCCESS_REQUEST).send({ message: 'Карточка удалена.'})
   })
   .catch(err => {

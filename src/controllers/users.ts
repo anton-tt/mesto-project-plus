@@ -6,6 +6,7 @@ import User from '../models/user';
 import BadRequestError from '../errors/bad-request';
 import ConflictError from '../errors/conflict';
 import NotFoundError from '../errors/not-found';
+import UnauthorizedError from '../errors/not-found';
 import { SUCCESS_REQUEST, CREATED } from '../utils/constants';
 
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
@@ -36,16 +37,13 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
     .then((user) => {
       bcrypt.compare(password, user.password)
     .then((matched) => {
-      if (!matched) {
-        throw new ConflictError('Неверный пароль.');
-      }
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
       res.send({ token });
       })
     })
     .catch(err => {
       if (err instanceof mongoose.Error.CastError) {
-        next(new NotFoundError('Пользователь не найден.'));
+        next(new UnauthorizedError('Неизвестная электронная почта или нневерный пароль.'));
       } else {
         next(err);
       }

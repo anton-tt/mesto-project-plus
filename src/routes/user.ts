@@ -6,8 +6,8 @@ import { getUserByIdValidator, updateUserProfileValidator, updateUserAvatarValid
 const userRouter = Router();
 
 userRouter.get('/', auth, getUsers);
-userRouter.get('/me', auth, getUserByIdValidator, getCurrentUser);
-userRouter.get('/:userId', auth, getUserById);
+userRouter.get('/me', auth, getCurrentUser);
+userRouter.get('/:userId', auth, getUserByIdValidator, getUserById);
 userRouter.patch('/me', auth, updateUserProfileValidator, updateUserProfile);
 userRouter.patch('/me/avatar', auth, updateUserAvatarValidator, updateUserAvatar);
 
