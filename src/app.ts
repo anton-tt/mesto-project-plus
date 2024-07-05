@@ -13,11 +13,11 @@ app.use(express.json());
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 app.use(requestLogger);
+app.use(helmet());
 app.use(appRouter);
 app.use(errorLogger);
 app.use(errors);
 app.use(errorHandler);
-app.use(helmet);
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
   console.log(`App listening on port ${PORT}`)
